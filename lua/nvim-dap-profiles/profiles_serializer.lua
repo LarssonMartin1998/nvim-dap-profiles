@@ -1,6 +1,10 @@
+local profiles = require("nvim-dap-profiles.profiles")
+local toml = require("nvim-dap-profiles.toml")
+
 local M = {}
 
-local profiles_file_name = ".nvim-dap-runner_profiles.toml"
+local profiles_file_name = ".nvim-dap-profiles.toml"
+
 local function profiles_file_exists()
     local file = io.open(profiles_file_name, "r")
     if file == nil then
@@ -11,7 +15,24 @@ local function profiles_file_exists()
     return true
 end
 
-local function set_profiles_from_serialized_data(profiles, data)
+function M.serialize_profiles()
+    local all_profiles = profiles.get_all_profiles()
+    local active_profile = profiles.get_active_profile()
+
+    local table_to_serialize = {
+        all_profiles = all_profiles,
+        active_profile = active_profile
+    }
+
+    toml.encode_to_file(profiles_file_name, table_to_serialize)
+end
+
+function M.deserialize_profiles()
+    if not profiles_file_exists() then
+        return
+    end
+
+    local data = toml.decode_from_file(profiles_file_name)
     if not data then
         return
     end
@@ -41,30 +62,6 @@ local function set_profiles_from_serialized_data(profiles, data)
     end
 
     profiles.create_profiles(names, paths, profile_to_activate)
-end
-
-local function intercept_run_fn_and_insert_program(profiles)
-    local dap = require("dap")
-    local original_run = dap.run
-    dap.run = function(config, opts)
-        local profile = profiles.get_active_profile()
-        config.program = vim.fn.getcwd() .. "/" .. profile.path
-        original_run(config, opts)
-    end
-end
-
-function M.run()
-    if not profiles_file_exists() then
-        return
-    end
-
-    local profiles = require("nvim-dap-runner.profiles")
-    local toml = require("nvim-dap-runner.toml")
-
-    local serialized_profiles = toml.decode_from_file(profiles_file_name)
-    set_profiles_from_serialized_data(profiles, serialized_profiles)
-
-    intercept_run_fn_and_insert_program(profiles)
 end
 
 return M
