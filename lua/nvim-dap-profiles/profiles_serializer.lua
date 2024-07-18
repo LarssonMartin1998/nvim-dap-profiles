@@ -16,13 +16,13 @@ local function profiles_file_exists()
 end
 
 function M.serialize_profiles()
-    local all_profiles = profiles.get_all_profiles()
-    local active_profile = profiles.get_active_profile()
-
     local table_to_serialize = {
-        all_profiles = all_profiles,
-        active_profile = active_profile
+        all_profiles = profiles.get_all_profiles(),
     }
+
+    if profiles.is_active_profile_set() then
+        table_to_serialize.active_profile = profiles.get_active_profile().name
+    end
 
     toml.encode_to_file(profiles_file_name, table_to_serialize)
 end
