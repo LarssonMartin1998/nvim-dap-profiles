@@ -1,1 +1,2 @@
 tests/toml_profiles.toml
+.nvim-dap-profiles.toml
