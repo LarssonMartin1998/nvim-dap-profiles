@@ -1,7 +1,7 @@
 package.path = package.path .. ";lua/?.lua"
 
 describe("Toml", function()
-    local toml = require("nvim-dap-runner.toml")
+    local toml = require("nvim-dap-profiles.toml")
 
     it("Decode toml into lua tables", function()
         local toml_table = toml.decode_from_file("tests/toml_file.toml")

@@ -1,7 +1,7 @@
 package.path = package.path .. ";lua/?.lua"
 
 describe("Util", function()
-    local util = require("nvim-dap-runner.util")
+    local util = require("nvim-dap-profiles.util")
 
     it("Table length", function()
         local test_table = { foo = "bar", hello = "world" }

@@ -1,4 +1,4 @@
-local util = require("nvim-dap-runner.util")
+local util = require("nvim-dap-profiles.util")
 
 local M = {}
 

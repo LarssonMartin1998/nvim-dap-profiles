@@ -1,9 +1,9 @@
-package = "nvim-dap-runner"
+package = "nvim-dap-profiles"
 version = "scm-1"
 rockspec_format = "3.0"
 
 description = {
-    summary = "Dependencies for nvim-dap-runner",
+    summary = "Dependencies for nvim-dap-profiles",
     license = "MIT",
     maintainer = "Martin Larsson <larssonmartin1998@gmail.com>"
 }

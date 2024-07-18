@@ -1,7 +1,7 @@
 local M = {}
 
 local function run()
-    require("nvim-dap-runner.app").run()
+    require("nvim-dap-profiles.app").run()
 end
 
 function M.setup(_)
@@ -10,6 +10,6 @@ end
 
 return setmetatable(M, {
     __index = function(_, key)
-        return require("nvim-dap-runner.api")[key]
+        return require("nvim-dap-profiles.api")[key]
     end
 })
