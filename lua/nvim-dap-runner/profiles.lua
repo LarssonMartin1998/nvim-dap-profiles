@@ -41,6 +41,10 @@ function M.set_active_profile(profile_name)
     assert(M.is_profile_valid(active_profile), "Profile is not valid: " .. active_profile)
 end
 
+function M.is_active_profile_set()
+    return active_profile ~= nil
+end
+
 function M.get_active_profile()
     return M.get_profile(active_profile)
 end
