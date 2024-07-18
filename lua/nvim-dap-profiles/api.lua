@@ -1,6 +1,18 @@
 local profiles = require("nvim-dap-profiles.profiles")
+local async = require("plenary.async")
+local serializer = require("nvim-dap-profiles.profiles_serializer")
 
 local M = {}
+
+local function pcallargs(fn, ...)
+    local args = { ... }
+    local result, err = pcall(fn, unpack(args))
+    if not result then
+        print(err .. "\n" .. debug.traceback())
+    end
+
+    return result
+end
 
 local function is_profile_name_invalid(profile_name)
     if profile_name == nil or profile_name == "" then
@@ -17,41 +29,45 @@ local function is_profile_name_invalid(profile_name)
 end
 
 function M.create_profile(path, name)
-    if path == nil or path == "" then
-        print("Path is nil or empty")
-        return
-    end
+    async.run(function()
+        if path == nil or path == "" then
+            print("Path is nil or empty")
+            return
+        end
 
-    if name == nil or name == "" then
-        print("Name is nil or empty")
-        return
-    end
+        if name == nil or name == "" then
+            print("Name is nil or empty")
+            return
+        end
 
-    profiles.create_profile(path, name)
+        if pcallargs(profiles.create_profile, path, name) then
+            serializer.serialize_profiles()
+        end
+    end)
 end
 
 function M.switch_to_profile(profile_name)
-    if is_profile_name_invalid(profile_name) then
-        return
-    end
+    async.run(function()
+        if is_profile_name_invalid(profile_name) then
+            return
+        end
 
-    profiles.set_active_profile(profile_name)
+        if pcallargs(profiles.set_active_profile, profile_name) then
+            serializer.serialize_profiles()
+        end
+    end)
 end
 
 function M.delete_profile(profile_name)
-    if is_profile_name_invalid(profile_name) then
-        return
-    end
+    async.run(function()
+        if is_profile_name_invalid(profile_name) then
+            return
+        end
 
-    profiles.delete_profile(profile_name)
-end
-
-function M.get_profiles()
-    return profiles.get_all_profiles()
-end
-
-function M.get_active_profile()
-    return profiles.get_active_profile()
+        if pcallargs(profiles.delete_profile, profile_name) then
+            serializer.serialize_profiles()
+        end
+    end)
 end
 
 return M
