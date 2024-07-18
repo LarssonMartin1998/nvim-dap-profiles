@@ -1,6 +1,8 @@
-local util = require("lua.nvim-dap-runner.util")
+package.path = package.path .. ";lua/?.lua"
 
 describe("Util", function()
+    local util = require("nvim-dap-runner.util")
+
     it("Table length", function()
         local test_table = { foo = "bar", hello = "world" }
         assert.same(util.table_len(test_table), 2)

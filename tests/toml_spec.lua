@@ -1,6 +1,8 @@
-local toml = require("lua.nvim-dap-runner.toml")
+package.path = package.path .. ";lua/?.lua"
 
 describe("Toml", function()
+    local toml = require("nvim-dap-runner.toml")
+
     it("Decode toml into lua tables", function()
         local toml_table = toml.decode_from_file("tests/toml_file.toml")
         assert.truthy(toml_table ~= nil)

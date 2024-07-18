@@ -1,6 +1,8 @@
-local profiles = require("lua.nvim-dap-runner.profiles")
+package.path = package.path .. ";lua/?.lua"
 
 describe("Profiles", function()
+    local profiles = require("nvim-dap-runner.profiles")
+
     it("Create a new profile", function()
         local name = "profile"
         local path = "path/to/binary"
