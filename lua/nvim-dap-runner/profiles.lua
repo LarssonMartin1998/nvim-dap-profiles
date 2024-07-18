@@ -1,4 +1,4 @@
-local util = require("lua.nvim-dap-runner.util")
+local util = require("nvim-dap-runner.util")
 
 local M = {}
 
@@ -126,6 +126,10 @@ end
 
 function M.get_num_profiles()
     return util.table_len(all_profiles)
+end
+
+function M.get_all_profiles()
+    return all_profiles
 end
 
 return M
