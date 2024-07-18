@@ -63,13 +63,13 @@ function M.create_profiles(names, paths, profile_to_activate)
         assert(names[i] ~= nil and names[i] ~= "", "Name is nil or empty")
         assert(path ~= nil and path ~= "", "Path is nil or empty")
 
-        M.create_profile(path, names[i], names[i] == profile_to_activate)
+        M.create_profile(names[i], path, names[i] == profile_to_activate)
     end
 end
 
-function M.create_profile(path, name, activate)
-    assert(path ~= nil and path ~= "", "Path is nil or empty")
+function M.create_profile(name, path, activate)
     assert(name ~= nil and name ~= "", "Name is nil or empty")
+    assert(path ~= nil and path ~= "", "Path is nil or empty")
     assert(not M.profile_exists(name), "Profile already exists: " .. name)
 
     local prev_tot_profiles = util.table_len(all_profiles)

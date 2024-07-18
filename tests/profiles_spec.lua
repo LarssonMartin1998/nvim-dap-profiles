@@ -6,10 +6,10 @@ describe("Profiles", function()
     it("Create a new profile", function()
         local name = "profile"
         local path = "path/to/binary"
-        profiles.create_profile(path, name, true)
+        profiles.create_profile(name, path, true)
         local profile = profiles.get_profile(name)
         local active_profile = profiles.get_active_profile()
-        profiles.create_profile(path .. "2", name .. "2")
+        profiles.create_profile(name .. "2", path .. "2")
 
         assert.truthy(profile ~= nil)
         assert.truthy(active_profile ~= nil)
@@ -53,7 +53,7 @@ describe("Profiles", function()
     end)
     it("Get the active profile", function()
         local name = "profile1"
-        profiles.create_profile("path/to/binary", name, true)
+        profiles.create_profile(name, "path/to/binary", true)
         local active = profiles.get_active_profile()
         assert.truthy(active ~= nil)
         assert.truthy(active.name == name)
@@ -63,7 +63,7 @@ describe("Profiles", function()
     end)
     it("Getters return the same value", function()
         local name = "profile1"
-        profiles.create_profile("path/to/binary", name, true)
+        profiles.create_profile(name, "path/to/binary", true)
         local profile = profiles.get_profile(name)
         local active = profiles.get_active_profile()
         assert.same(profile, active)
@@ -93,7 +93,7 @@ describe("Profiles", function()
         }
 
         for _, profile in ipairs(profiles_to_create) do
-            profiles.create_profile(profile.path, profile.name)
+            profiles.create_profile(profile.name, profile.path)
             assert.truthy(profiles.profile_exists(profile.name))
         end
 
@@ -121,7 +121,7 @@ describe("Profiles", function()
 
         local function create_profiles()
             for _, profile in ipairs(profiles_to_create) do
-                profiles.create_profile(profile.path, profile.name)
+                profiles.create_profile(profile.name, profile.path)
             end
         end
 
