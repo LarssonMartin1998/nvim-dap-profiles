@@ -14,7 +14,7 @@ dependencies = {
 }
 
 source = {
-    url = "replace this with a link to the git repo",
+    url = "https://github.com/LarssonMartin1998/nvim-dap-profiles",
 }
 
 build = {
