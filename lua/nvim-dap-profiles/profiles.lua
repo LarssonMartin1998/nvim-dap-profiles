@@ -1,4 +1,4 @@
-local util = require("nvim-dap-profiles.util")
+local tbl = require("nvim-dap-profiles.table")
 
 local M = {}
 
@@ -72,7 +72,7 @@ function M.create_profile(name, path, activate)
     assert(path ~= nil and path ~= "", "Path is nil or empty")
     assert(not M.profile_exists(name), "Profile already exists: " .. name)
 
-    local prev_tot_profiles = util.table_len(all_profiles)
+    local prev_tot_profiles = tbl.len(all_profiles)
     if prev_tot_profiles == 0 then
         activate = true
     end
@@ -86,7 +86,7 @@ function M.create_profile(name, path, activate)
         M.set_active_profile(name)
     end
 
-    assert(prev_tot_profiles + 1 == util.table_len(all_profiles), "Profile was not added to all_profiles")
+    assert(prev_tot_profiles + 1 == tbl.len(all_profiles), "Profile was not added to all_profiles")
     assert(M.profile_exists(name), "Profile does not exist after trying to create it: " .. name)
     assert((activate and M.get_active_profile().name == name) or (not activate and active_profile ~= name),
         "Active profile was not set correctly")
@@ -95,7 +95,7 @@ end
 function M.delete_profiles(profile_names)
     assert(profile_names ~= nil and #profile_names > 0, "Profile names is nil or empty")
 
-    local prev_tot_profiles = util.table_len(all_profiles)
+    local prev_tot_profiles = tbl.len(all_profiles)
     for _, name in ipairs(profile_names) do
         assert(name ~= nil and name ~= "", "Name is nil or empty")
         assert(M.profile_exists(name), "Profile does not exist: " .. name)
@@ -103,20 +103,20 @@ function M.delete_profiles(profile_names)
         M.delete_profile(name)
     end
 
-    assert(prev_tot_profiles - #profile_names == util.table_len(all_profiles), "Profiles were not deleted")
+    assert(prev_tot_profiles - #profile_names == tbl.len(all_profiles), "Profiles were not deleted")
 end
 
 function M.delete_profile(profile_name)
     assert(profile_name ~= nil and profile_name ~= "", "Profile name is nil or empty")
     assert(M.profile_exists(profile_name), "Profile does not exist: " .. profile_name)
 
-    local prev_tot_profiles = util.table_len(all_profiles)
+    local prev_tot_profiles = tbl.len(all_profiles)
     all_profiles[profile_name] = nil
     if active_profile == profile_name then
         active_profile = nil
     end
 
-    assert(prev_tot_profiles - 1 == util.table_len(all_profiles), "Profile was not deleted from all_profiles")
+    assert(prev_tot_profiles - 1 == tbl.len(all_profiles), "Profile was not deleted from all_profiles")
     assert(not M.profile_exists(profile_name), "Profile still exists after trying to delete it: " .. profile_name)
     assert(active_profile ~= profile_name, "Active profile was not unset")
 end
@@ -129,7 +129,7 @@ function M.delete_all_profiles()
 end
 
 function M.get_num_profiles()
-    return util.table_len(all_profiles)
+    return tbl.len(all_profiles)
 end
 
 function M.get_all_profiles()
