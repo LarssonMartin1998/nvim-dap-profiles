@@ -18,26 +18,22 @@ describe("Profiles Serializer", function()
 
     local serializer = require("nvim-dap-profiles.profiles_serializer")
     local profiles = require("nvim-dap-profiles.profiles")
+    local path_to_test_file = "tests/toml_profiles.toml"
 
     local names = { "test1", "test2", "test3" }
-    local paths = { "path1", "path2", "path3" }
+    local binary_paths = { "path1", "path2", "path3" }
+    local run_dir_paths = { "", nil, "run_dir3" }
     it("De/Serialize", function()
         profiles.delete_all_profiles()
 
-        profiles.create_profiles(names, paths, "test2")
+        profiles.create_profiles(names, binary_paths, run_dir_paths, "test2")
         local profiles_from_code = clone(profiles.get_all_profiles())
-        serializer.serialize_profiles()
+        serializer.serialize_profiles(path_to_test_file)
 
         profiles.delete_all_profiles()
-        local data = serializer.deserialize_profiles()
-        local all_profiles = profiles.get_all_profiles()
-        local active_profile = profiles.get_active_profile()
-        local compare = {
-            active_profile = active_profile,
-            all_profiles = all_profiles,
-        }
-
+        serializer.deserialize_profiles(path_to_test_file)
         local profiles_from_file = profiles.get_all_profiles()
+
         assert.truthy(profiles_from_code)
         assert.truthy(profiles_from_file)
         assert.same(profiles_from_code, profiles_from_file)

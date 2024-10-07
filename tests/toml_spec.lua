@@ -26,15 +26,16 @@ describe("Toml", function()
             all_profiles = {
                 profile1 = {
                     name = "profile1",
-                    path = "path/to/binary1"
+                    binary_path = "path/to/binary1"
                 },
                 profile2 = {
                     name = "profile2",
-                    path = "path/to/binary2"
+                    binary_path = "path/to/binary2",
+                    run_dir_path = "path/to/run_dir"
                 },
                 profile3 = {
                     name = "profile3",
-                    path = "path/to/binary3"
+                    binary_path = "path/to/binary3"
                 },
             }
         }

@@ -10,12 +10,20 @@ describe("Profiles", function()
         local profile = profiles.get_profile(name)
         local active_profile = profiles.get_active_profile()
         profiles.create_profile(name .. "2", path .. "2")
+        local run_dir = "test_run_dir"
+        profiles.create_profile(name .. "3", path .. "3", run_dir)
 
+        local profile3 = profiles.get_profile(name .. "3")
         assert.truthy(profile ~= nil)
         assert.truthy(active_profile ~= nil)
         assert.same(profile.name, name)
         assert.same(profile, active_profile)
         assert.is_not.same(profile, profiles.get_profile(name .. "2"))
+
+        assert.truthy(profile3 ~= nil)
+        assert.same(profile3.name, name .. "3")
+        assert.is_not.same(profile3, profiles.get_profile(name .. "2"))
+        assert.truthy(profile3.run_dir_path == run_dir)
 
         profiles.delete_all_profiles()
     end)
@@ -23,7 +31,7 @@ describe("Profiles", function()
         local names = { "profile1", "profile2", "profile3" }
         local paths = { "path/to/binary", "path/to/binary2", "path/to/binary3" }
         local active_profile_name = names[2]
-        profiles.create_profiles(names, paths, active_profile_name)
+        profiles.create_profiles(names, paths, nil, active_profile_name)
 
         for i, _ in ipairs(paths) do
             assert.truthy(profiles.is_profile_valid(names[i]))
