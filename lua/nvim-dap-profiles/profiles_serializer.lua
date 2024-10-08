@@ -5,8 +5,13 @@ local M = {}
 
 local profiles_file_name = ".nvim-dap-profiles.toml"
 
-local function profiles_file_exists()
-    local file = io.open(profiles_file_name, "r")
+-- This function is mainly intended to streamline testing
+local function get_file_name(profiles_file_override)
+    return profiles_file_override or profiles_file_name
+end
+
+local function profiles_file_exists(profiles_file_override)
+    local file = io.open(get_file_name(profiles_file_override), "r")
     if file == nil then
         return false
     end
@@ -15,7 +20,7 @@ local function profiles_file_exists()
     return true
 end
 
-function M.serialize_profiles()
+function M.serialize_profiles(profiles_file_override)
     local table_to_serialize = {
         all_profiles = profiles.get_all_profiles(),
     }
@@ -24,15 +29,15 @@ function M.serialize_profiles()
         table_to_serialize.active_profile = profiles.get_active_profile().name
     end
 
-    toml.encode_to_file(profiles_file_name, table_to_serialize)
+    toml.encode_to_file(get_file_name(profiles_file_override), table_to_serialize)
 end
 
-function M.deserialize_profiles()
-    if not profiles_file_exists() then
+function M.deserialize_profiles(delete_previous_profiles, profiles_file_override)
+    if not profiles_file_exists(profiles_file_override) then
         return
     end
 
-    local data = toml.decode_from_file(profiles_file_name)
+    local data = toml.decode_from_file(get_file_name(profiles_file_override))
     if not data then
         return
     end
@@ -42,17 +47,25 @@ function M.deserialize_profiles()
     end
 
     local names = {}
-    local paths = {}
+    local binary_paths = {}
+    local run_dir_paths = {}
     for _, profile in pairs(data.all_profiles) do
         local valid_name = profile.name and profile.name ~= ""
-        local valid_path = profile.path and profile.path ~= ""
+        local valid_path = profile.binary_path and profile.binary_path ~= ""
         if valid_name and valid_path then
             table.insert(names, profile.name)
-            table.insert(paths, profile.path)
+            table.insert(binary_paths, profile.binary_path)
+
+            local valid_run_dir = profile.run_dir_path and profile.run_dir_path ~= ""
+            if valid_run_dir then
+                table.insert(run_dir_paths, profile.run_dir_path)
+            else
+                table.insert(run_dir_paths, nil)
+            end
         end
     end
 
-    if #names == 0 or #paths == 0 then
+    if #names == 0 or #binary_paths == 0 then
         return
     end
 
@@ -61,7 +74,12 @@ function M.deserialize_profiles()
         profile_to_activate = data.active_profile
     end
 
-    profiles.create_profiles(names, paths, profile_to_activate)
+    delete_previous_profiles = delete_previous_profiles or false
+    if delete_previous_profiles then
+        profiles.delete_all_profiles()
+    end
+
+    profiles.create_profiles(names, binary_paths, run_dir_paths, profile_to_activate)
 end
 
 return M

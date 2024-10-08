@@ -20,26 +20,49 @@ local function user_has_plugin(plugin_req_str)
     return result and plugin
 end
 
+local function add_table_to_index_table(index_table, table)
+    return vim.tbl_extend("force", index_table, table)
+end
+
 local function add_plugin_extension_api_to_index_table(index_table, plugin_extension)
     if not user_has_plugin(plugin_extension[1]) then
         return index_table
     end
 
-    return vim.tbl_extend("force", index_table, require("nvim-dap-profiles." .. plugin_extension[2]))
+    return add_table_to_index_table(index_table, require("nvim-dap-profiles." .. plugin_extension[2]))
 end
 
 local function build_index_table()
     local index_table = require("nvim-dap-profiles.api")
     assert(index_table, "Failed to initialize index_table with api table")
 
-    local plugin_extensions = {
-        { "telescope", "telescope_extension_api" }
-    }
+    local function add_plugin_extensions()
+        local plugin_extensions = {
+            { "telescope", "telescope_extension_api" }
+        }
 
-    for _, plugin in ipairs(plugin_extensions) do
-        index_table = add_plugin_extension_api_to_index_table(index_table, plugin)
-        assert(index_table, "Failed to add plugin extension to index table:" .. plugin[1] .. " | " .. plugin[2])
+        for _, plugin in ipairs(plugin_extensions) do
+            index_table = add_plugin_extension_api_to_index_table(index_table, plugin)
+            assert(index_table, "Failed to add plugin extension to index table:" .. plugin[1] .. " | " .. plugin[2])
+        end
     end
+
+    local function add_modules()
+        local modules = {
+            "events",
+        }
+
+        for _, module in ipairs(modules) do
+            local module_table = {
+                [module] = require("nvim-dap-profiles." .. module)
+            }
+
+            index_table = add_table_to_index_table(index_table, module_table)
+        end
+    end
+
+    add_plugin_extensions()
+    add_modules()
 
     assert(index_table, "Failed to build index table")
     return index_table
