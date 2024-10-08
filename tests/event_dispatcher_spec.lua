@@ -1,58 +1,24 @@
 package.path = package.path .. ";lua/?.lua"
 
 describe("Event Dispatcher", function()
-    -- local events = require("nvim-dap-profiles.events")
-    -- local event_dispatcher = require("nvim-dap-profiles.event_dispatcher")
-    --
-    -- it("Adds event group", function()
-    --     local event = events.PRE_DAP_RUN
-    --     event_dispatcher.add_event_group(event)
-    --     assert.is_not_nil(event_dispatcher.get_callbacks(event))
-    -- end)
-    --
-    -- it("Fires callbacks for event", function()
-    --     local event = events.PRE_DAP_RUN
-    --
-    --     local callback1_called = false
-    --     local function callback1()
-    --         callback1_called = true
-    --     end
-    --
-    --     local callback2_called = false
-    --     local function callback2()
-    --         callback2_called = true
-    --     end
-    --
-    --     event_dispatcher.add_callback(event, callback1)
-    --     event_dispatcher.add_callback(event, callback2)
-    --
-    --     event_dispatcher.fire_callbacks(event)
-    --
-    --     assert.is_true(callback1_called)
-    --     assert.is_true(callback2_called)
-    -- end)
-    --
-    -- it("Removes callback", function()
-    --     local event = events.PRE_DAP_RUN
-    --
-    --     local callback1_called = false
-    --     local function callback1()
-    --         callback1_called = true
-    --     end
-    --
-    --     local callback2_called = false
-    --     local function callback2()
-    --         callback2_called = true
-    --     end
-    --
-    --     event_dispatcher.add_callback(event, callback1)
-    --     local callback2_index = event_dispatcher.add_callback(event, callback2)
-    --
-    --     event_dispatcher.remove_callback(event, callback2_index)
-    --
-    --     event_dispatcher.fire_callbacks(event)
-    --
-    --     assert.is_true(callback1_called)
-    --     assert.is_false(callback2_called)
-    -- end)
+    local events = require("nvim-dap-profiles.events")
+    local event_dispatcher = require("nvim-dap-profiles.event_dispatcher")
+
+    it("Adds event group", function()
+        event_dispatcher.add_event_group(events.PRE_DAP_RUN)
+
+        local did_callback_run = false
+        local callback_id = event_dispatcher.add_callback(events.PRE_DAP_RUN, function()
+            did_callback_run = true
+        end)
+
+        assert.is_false(did_callback_run)
+        event_dispatcher.fire(events.PRE_DAP_RUN)
+        assert.is_true(did_callback_run)
+
+        did_callback_run = false
+        event_dispatcher.remove_callback(events.PRE_DAP_RUN, callback_id)
+        event_dispatcher.fire(events.PRE_DAP_RUN)
+        assert.is_false(did_callback_run)
+    end)
 end)
