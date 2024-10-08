@@ -92,7 +92,7 @@ end
 
 function M.run()
     for _, event in pairs(events) do
-        event_dispatcher.add_event(event)
+        event_dispatcher.add_event_group(event)
     end
 
     serializer.deserialize_profiles()
