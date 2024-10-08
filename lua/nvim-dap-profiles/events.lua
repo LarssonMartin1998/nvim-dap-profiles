@@ -6,7 +6,7 @@ local M = {
 }
 
 for _, event in pairs(M) do
-    type.create(event, "event")
+    M[event] = type.create(event, "event")
 end
 
 return M
