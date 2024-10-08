@@ -45,9 +45,9 @@ local function profiles_run()
             config.program = cwd .. binary_path
         end
 
-        event_dispatcher.fire_callbacks(events.PRE_DAP_RUN, profile, cwd)
+        event_dispatcher.fire(events.PRE_DAP_RUN, profile, cwd)
         original_run(config, opts)
-        event_dispatcher.fire_callbacks(events.POST_DAP_RUN, profile, original_cwd)
+        event_dispatcher.fire(events.POST_DAP_RUN, profile, original_cwd)
     end
 end
 

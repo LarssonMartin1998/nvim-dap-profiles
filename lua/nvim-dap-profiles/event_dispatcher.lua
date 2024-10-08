@@ -41,7 +41,7 @@ function M.remove_callback(event, index)
     all_callbacks[event][index] = nil
 end
 
-function M.fire_callbacks(event, ...)
+function M.fire(event, ...)
     assert(event, "Event cannot be nil")
     assert(type.get(event) == "event", "Event must be an event type")
 
