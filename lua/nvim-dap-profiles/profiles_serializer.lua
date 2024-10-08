@@ -32,7 +32,7 @@ function M.serialize_profiles(profiles_file_override)
     toml.encode_to_file(get_file_name(profiles_file_override), table_to_serialize)
 end
 
-function M.deserialize_profiles(profiles_file_override)
+function M.deserialize_profiles(delete_previous_profiles, profiles_file_override)
     if not profiles_file_exists(profiles_file_override) then
         return
     end
@@ -72,6 +72,11 @@ function M.deserialize_profiles(profiles_file_override)
     local profile_to_activate = nil
     if data.active_profile ~= nil then
         profile_to_activate = data.active_profile
+    end
+
+    delete_previous_profiles = delete_previous_profiles or false
+    if delete_previous_profiles then
+        profiles.delete_all_profiles()
     end
 
     profiles.create_profiles(names, binary_paths, run_dir_paths, profile_to_activate)

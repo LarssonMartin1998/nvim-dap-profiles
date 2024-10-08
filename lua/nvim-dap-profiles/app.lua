@@ -13,7 +13,7 @@ local function profiles_run()
         -- the latest profiles if the user updated the file directly.
         -- This should not be an issue as long as the profiles are serialized after any changes.
         -- Otherwise, we would risk running with outdated profiles.
-        serializer.deserialize_profiles()
+        serializer.deserialize_profiles(true)
 
         local profile = nil
         local cwd = vim.fn.getcwd()

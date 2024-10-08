@@ -30,8 +30,7 @@ describe("Profiles Serializer", function()
         local profiles_from_code = clone(profiles.get_all_profiles())
         serializer.serialize_profiles(path_to_test_file)
 
-        profiles.delete_all_profiles()
-        serializer.deserialize_profiles(path_to_test_file)
+        serializer.deserialize_profiles(true, path_to_test_file)
         local profiles_from_file = profiles.get_all_profiles()
 
         assert.truthy(profiles_from_code)
