@@ -3,6 +3,9 @@ package.path = package.path .. ";lua/?.lua"
 describe("Profiles", function()
     local profiles = require("nvim-dap-profiles.profiles")
 
+    before_each(function()
+        profiles.delete_all_profiles()
+    end)
     it("Create a new profile", function()
         local name = "profile"
         local path = "path/to/binary"
@@ -24,8 +27,6 @@ describe("Profiles", function()
         assert.same(profile3.name, name .. "3")
         assert.is_not.same(profile3, profiles.get_profile(name .. "2"))
         assert.truthy(profile3.run_dir_path == run_dir)
-
-        profiles.delete_all_profiles()
     end)
     it("Create a batch of profiles and activate one", function()
         local names = { "profile1", "profile2", "profile3" }
@@ -38,8 +39,6 @@ describe("Profiles", function()
         end
 
         assert.truthy(profiles.get_active_profile().name == active_profile_name)
-
-        profiles.delete_all_profiles()
     end)
     it("Switch between profiles", function()
         local names = { "profile1", "profile2", "profile3" }
@@ -56,8 +55,6 @@ describe("Profiles", function()
         end
 
         assert.truthy(profiles.get_active_profile().name == names[1])
-
-        profiles.delete_all_profiles()
     end)
     it("Get the active profile", function()
         local name = "profile1"
@@ -66,8 +63,6 @@ describe("Profiles", function()
         assert.truthy(active ~= nil)
         assert.truthy(active.name == name)
         assert.truthy(profiles.is_profile_valid(name))
-
-        profiles.delete_all_profiles()
     end)
     it("Getters return the same value", function()
         local name = "profile1"
@@ -75,8 +70,6 @@ describe("Profiles", function()
         local profile = profiles.get_profile(name)
         local active = profiles.get_active_profile()
         assert.same(profile, active)
-
-        profiles.delete_all_profiles()
     end)
     it("Profile exists behaves as expected", function()
         local profiles_to_create = {
@@ -108,8 +101,6 @@ describe("Profiles", function()
         for _, name in ipairs(invalid_profile_names) do
             assert.falsy(profiles.profile_exists(name))
         end
-
-        profiles.delete_all_profiles()
     end)
     it("Delete profiles", function()
         local profiles_to_create = {

@@ -4,7 +4,7 @@ describe("Profiles Serializer", function()
     local function clone(source)
         local orig_type = type(source)
         local copy
-        if orig_type == 'table' then
+        if orig_type == "table" then
             copy = {}
             for orig_key, orig_value in next, source, nil do
                 copy[clone(orig_key)] = clone(orig_value)
